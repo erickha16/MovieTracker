@@ -82,6 +82,15 @@ namespace MovieTracker.Services.Implementation
         //Agregar una nueva serie--------------------------------------------------------------------------------------------------------------
         public async Task AddAsync(SerieDTO serieDTO)
         {
+            // Verificar si ya existe una serie con el mismo título y año
+            var existingSerie = await _context.Series
+                .FirstOrDefaultAsync(s => s.Title == serieDTO.Title && s.Year == serieDTO.Year && !s.IsDeleted);
+            if (existingSerie != null)
+            {
+                // Si ya existe una serie con el mismo título y año, lanzar una excepción
+                throw new ApplicationException(Messages.Error.SerieAlreadyExists);
+            }
+
             //Cargar la imagen en el servidor y obtener la URL
             var urlImagen = await _imageService.UploadImage(serieDTO.File); // Llama al servicio de imágenes para cargar la imagen y obtener la URL
 

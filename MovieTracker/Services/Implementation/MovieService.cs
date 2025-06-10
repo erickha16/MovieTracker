@@ -76,6 +76,13 @@ namespace MovieTracker.Services.Implementation
         //Agregar una nueva película--------------------------------------------------------------------------------------------------------------
         public async Task AddAsync(MovieDTO movieDTO)
         {
+            // Verificar si ya existe una película con el mismo título y año
+            var existingMovie = await _context.Movies
+                .FirstOrDefaultAsync(m => m.Title == movieDTO.Title && m.Year == movieDTO.Year && !m.IsDeleted);
+            if (existingMovie != null) {
+                // Si ya existe una película con el mismo título y año, lanzar una excepción
+                throw new ApplicationException(Messages.Error.MovieAlreadyExists); // Mensaje de error personalizado
+            }
             //Cargar la imagen en el servidor y obtener la URL
             var urlImagen = await _imageService.UploadImage(movieDTO.File); // Llama al servicio de imágenes para cargar la imagen y obtener la URL
 

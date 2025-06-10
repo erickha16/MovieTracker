@@ -62,12 +62,20 @@ namespace MovieTracker.Services.Implementation
         // Método para agregar un nuevo género
         public async Task AddAsync(GenreDTO genreDTO)
         {
+            // Validar si el género ya existe
+            var existingGenre = await _context.Genres
+                .FirstOrDefaultAsync(g => g.Name == genreDTO.Name && !g.IsDeleted);
+            if(existingGenre != null) // Si el género ya existe, lanzamos una excepción
+            {
+                throw new ApplicationException(Messages.Error.GenreAlreadyExists);
+            }
             var genre = new Models.Genre
             {
                 Name = genreDTO.Name,
                 Active = true, // Por defecto, al crear un género, lo marcamos como activo
                 HighSystem = genreDTO.HighSystem
             };
+
 
             await _context.Genres.AddAsync(genre);
             await _context.SaveChangesAsync();

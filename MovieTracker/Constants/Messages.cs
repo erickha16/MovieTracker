@@ -74,6 +74,14 @@
             public const string MovieCannotBeDeleted = "No se puede eliminar la película porque tiene referencias";
             public const string SerieCannotBeDeleted = "No se puede eliminar la serie porque tiene referencias";
             public const string RatingCannotBeDeleted = "No se puede eliminar la calificación porque tiene referencias";
+
+            //Existencia
+            public const string GenreAlreadyExists = "El género ya existe";
+            public const string PlatformAlreadyExists = "La plataforma ya existe";
+            public const string ActorAlreadyExists = "El actor ya existe";
+            public const string MovieAlreadyExists = "La película ya existe";
+            public const string SerieAlreadyExists = "La serie ya existe";
+            public const string RatingAlreadyExists = "La calificación ya existe";
         }
 
         public static class Validation
