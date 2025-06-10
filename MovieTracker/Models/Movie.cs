@@ -20,9 +20,9 @@ namespace MovieTracker.Models
         [Required]
         public int GenderId { get; set; }
 
-        public int PlataformId { get; set; }
+        public int? PlataformId { get; set; }
 
-        public int RatingId { get; set; } //Duda si esto va aquí
+        public int? RatingId { get; set; } //Duda si esto va aquí
 
         //Propeidades de navegación
         public IEnumerable<ActorsMovies>? Actorsmovies { get; set; } // Relación con actores
