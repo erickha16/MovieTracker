@@ -1,6 +1,6 @@
 ﻿@model List<MovieTracker.DTOs.MovieDTO>
 @{
-    ViewData["Title"] = "Movies";
+    ViewData["Title"] = "Peliculas";
 }
 
 <div class="container mt-4">
@@ -18,19 +18,26 @@
         </div>
     </div>
     <div class="row row-cols-1 row-cols-md-3 g-4">
-        @foreach (var movie in Model)
+        @if (Model.Any())
         {
-            <div class="col">
-                <div class="card" style="width: 18rem;">
-                    <img src="@movie.PosterUrl" class="card-img-top" alt="@movie.Title" style="height: 200px; object-fit: cover;">
-                    <div class="card-body">
-                        <h5 class="card-title">@movie.Title</h5>
-                        <p class="card-text">@movie.Description</p>
-                        <a href="@Url.Action("Details", "Movie", new { id = movie.Id })" class="btn btn-primary">Detalles</a>
+            foreach (var movie in Model)
+            {
+                <div class="col">
+                    <div class="card" style="width: 18rem;">
+                        <img src="@movie.PosterUrl" class="card-img-top" alt="@movie.Title" style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">@movie.Title</h5>
+                            <p class="card-text">@movie.Description</p>
+                            <a href="@Url.Action("Details", "Movie", new { id = movie.Id })" class="btn btn-primary">Detalles</a>
+                        </div>
                     </div>
-                </div>
 
-            </div>
+                </div>
+            }
+        }
+        else
+        {
+            <h5>Comienza agregando una peli bien chida :D</h5>
         }
 
     </div>

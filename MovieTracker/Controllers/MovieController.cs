@@ -26,7 +26,7 @@ namespace MovieTracker.Controllers
         // --------------------------------------  Mostrar lista de películas -------------------------------------- \\
         public async Task<IActionResult> Index()
         {
-            var movies = await _movieService.GetAllAsync(); //Obtiene todas las marcas de forma asíncrona
+            var movies = await _movieService.GetAllAsync(); 
             return View(movies);
         }
 
@@ -45,7 +45,7 @@ namespace MovieTracker.Controllers
             }
         }
 
-        //Crear una nueva película
+        // ---------------------------------------- Crear una nueva película ---------------------------------------- \\
         //GET
         public async Task<IActionResult> Create()
         {

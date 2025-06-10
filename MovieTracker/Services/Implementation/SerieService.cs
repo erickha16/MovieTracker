@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MovieTracker.Constants;
 using MovieTracker.Data;
 using MovieTracker.DTOs;
+using MovieTracker.Models;
 using MovieTracker.Services.Interface;
 
 namespace MovieTracker.Services.Implementation
@@ -51,23 +53,67 @@ namespace MovieTracker.Services.Implementation
         //Obtener una serie por ID--------------------------------------------------------------------------------------------------------------
         public async Task<SerieDTO> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var serie = await _context.Series
+               .Select(s => new SerieDTO
+               {
+                   Id = s.Id,
+                   Title = s.Title,
+                   Year = s.Year,
+                   Director = s.Director,
+                   Description = s.Description,
+                   Seasons = s.Seasons,
+                   Episodes = s.Episodes,
+                   PosterUrl = s.PosterUrl,
+                   GenreId = s.GenreId,
+                   Genre = s.Genre.Name,
+                   PlatformId = s.PlatformId,
+                   Platform = s.Platform.Name
+               })
+               .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (serie == null)
+            {
+                throw new ApplicationException(Messages.Error.SerieNotFound);
+            }
+
+            return serie;
         }
 
         //Agregar una nueva serie--------------------------------------------------------------------------------------------------------------
         public async Task AddAsync(SerieDTO serieDTO)
         {
-            throw new NotImplementedException();
+            //Cargar la imagen en el servidor y obtener la URL
+            var urlImagen = await _imageService.UploadImage(serieDTO.File); // Llama al servicio de imágenes para cargar la imagen y obtener la URL
+
+            //Crear una nueva instancia de Serie y mapear los datos desde SerieDTO
+            var serie = new Serie
+            {
+                Title = serieDTO.Title,
+                Year = serieDTO.Year,
+                Director = serieDTO.Director,
+                Description = serieDTO.Description,
+                Seasons = serieDTO.Seasons,
+                Episodes = serieDTO.Episodes,
+                PosterUrl = urlImagen, // Asignar la URL de la imagen cargada
+                GenreId = serieDTO.GenreId,
+                PlatformId = serieDTO.PlatformId,
+                Active = true, // Por defecto, al agregar una nueva serie, se establece como activa
+            };
+
+            //Agregar la nueva serie al contexto de la base de datos
+            await _context.Series.AddAsync(serie); // Agrega la serie al contexto
+            await _context.SaveChangesAsync(); // Guarda los cambios en la base de datos
+
         }
 
         //Actualizar una serie existente--------------------------------------------------------------------------------------------------------------
-        public async Task DeleteAsync(int id)
+        public async Task UpdateAsync(SerieDTO serieDTO)
         {
             throw new NotImplementedException();
         }
 
         //Eliminar una serie por ID--------------------------------------------------------------------------------------------------------------
-        public async Task UpdateAsync(SerieDTO serieDTO)
+        public async Task DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }

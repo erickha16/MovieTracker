@@ -11,6 +11,7 @@ namespace MovieTracker.DTOs
         public string Title { get; set; }
 
         [Display(Name = "Año de estreno")]
+        [Range(1900, 2100, ErrorMessage = "El año debe estar entre 1900 y 2100")]
         public int Year { get; set; }
 
         public string? Director { get; set; }
@@ -19,12 +20,16 @@ namespace MovieTracker.DTOs
         public string? Description { get; set; }
 
         [Display(Name = "Temporadas")]
+        [Required(ErrorMessage = "Indique el número de temporadas")]
         public int Seasons { get; set; }
 
         [Display(Name = "Episodios")]
+        [Required(ErrorMessage = "La serie debe contener al menos 1 episodio")]
         public int Episodes { get; set; }
 
         public string? PosterUrl { get; set; }
+
+        public IFormFile? File { get; set; } // Para recibir el archivo de imagen
 
 
 
