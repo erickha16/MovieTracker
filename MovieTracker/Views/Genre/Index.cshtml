@@ -1,0 +1,61 @@
+﻿@model IEnumerable<MovieTracker.DTOs.GenreDTO>
+@{
+    ViewData["Title"] = "Listado de Género";
+    int num = 1;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="align-content-lg-stretch col-lg-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="display-6"> @ViewData["Title"] </h1>
+                <a href="@Url.Action("Create", "Genre")" class="btn btn-success">
+                    <i class="bg-info bi-plus-circle"></i> Agregar género
+                </a>
+            </div>
+
+            <!--Mostrar las alertas-->
+            @await Html.PartialAsync("_Alerts")
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">@Html.DisplayNameFor(m => m.Name)</th>
+                            <th scope="col">@Html.DisplayNameFor(m => m.Active)</th>
+                            <th scope="col">@Html.DisplayNameFor(m => m.HighSystem)</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @if (Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <th scope="row">@(num++)</th>
+                                    <td>@item.Name</td>
+                                    <td>
+                                        <i class="@(item.Active ? "fas fa-check text-success" : "fas fa-times text-danger")"></i>
+                                    </td>
+                                    <td>@item.HighSystem</td>
+                                    <td>
+                                        <a href="@Url.Action("Edit", "Genre")" class="btn btn-sm btn-warning">Editar</a>
+                                        <a href="@Url.Action("Details", "Genre")" class="btn btn-sm btn-info">Detalles</a>
+                                        <a href="@Url.Action("ConfirmDelete", "Genre", new { id = item.Id })" class="btn btn-sm btn-danger">Eliminar</a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="5">No hay categorías disponibles.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

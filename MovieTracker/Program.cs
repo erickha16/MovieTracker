@@ -1,6 +1,8 @@
 //Dar de alta servicios y configurar la aplicación ASP.NET Core MVC
 using Microsoft.EntityFrameworkCore;
 using MovieTracker.Data;
+using MovieTracker.Services.Implementation;
+using MovieTracker.Services.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +14,16 @@ var connection = builder.Configuration.GetConnectionString("DbConnection") ??
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connection));
 
-//------------------------------ Agregar Servicios personalizados ------------------------------\\
 
+
+//------------------------------ Agregar Servicios personalizados ------------------------------\\
+//Servicio de imágenes, en este caso no se implementa, pero se puede agregar más adelante si es necesario.
+// builder.Services.AddScoped<IImageService, ImageService>();
+
+// Servicio de géneros
+builder.Services.AddScoped<IGenreService, GenreService>();
+
+//
 
 
 
