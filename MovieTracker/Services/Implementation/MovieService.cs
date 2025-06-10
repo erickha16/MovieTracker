@@ -127,8 +127,19 @@ namespace MovieTracker.Services.Implementation
         //Eliminar una película por ID--------------------------------------------------------------------------------------------------------------
         public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var movie = await _context.Movies.FindAsync(id); // Busca la película por ID
+
+            if (movie == null || movie.IsDeleted)
+            {
+                throw new ApplicationException(Messages.Error.MovieNotFound); // Si no se encuentra, lanza una excepción
+            }
+
+            //Marcar la película como eliminada (en lugar de eliminarla físicamente)
+            movie.IsDeleted = true; // Marca la película como eliminada
+
+            _context.Update(movie); // Actualiza el estado de la película en el contexto
+            _context.SaveChanges();
         }
-        
+
     }
 }

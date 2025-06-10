@@ -141,5 +141,37 @@ namespace MovieTracker.Controllers
 
             return View(movieDTO); //Devuelve la vista con el modelo de película para corregir errores
         }
+
+        // --------------------------------------  Acción para confirmar la eliminación -------------------------------------- \\
+        public async Task<IActionResult> ConfirmDelete(int id)
+        {
+            try
+            {
+                var movie = await _movieService.GetByIdAsync(id); //Obtiene la película por ID de forma asíncrona
+                return View(movie); //Devuelve la vista de confirmación de eliminación
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = Messages.Error.MovieNotFound;
+                return RedirectToAction("Index"); //Redirige a la lista de películas si no se encuentra la película
+            }
+        }
+
+        //---------------------------- Acción para eliminar un producto ---------------------------------------- \\
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                await _movieService.DeleteAsync(id);
+                TempData["SuccessMessage"] = Messages.Success.MovieDeleted;
+            }
+            catch (Exception e)
+            {
+                TempData["ErrorMessage"] = Messages.Error.MovieDeleteError;
+            }
+
+            return RedirectToAction("Index");
+        }
     }
 }
