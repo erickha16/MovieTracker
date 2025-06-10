@@ -1,45 +1,145 @@
-﻿@model List<MovieTracker.DTOs.SerieDTO>  
-@{  
-    ViewData["Title"] = "Series";  
-}  
+﻿@model List<MovieTracker.DTOs.SerieDTO>
+@{
+    ViewData["Title"] = "Series";
+}
 
-<div class="container mt-4">  
-    <div class="row">  
-        <div class="align-content-lg-stretch col-lg-12">  
-            <div class="d-flex justify-content-between align-items-center mb-4">  
-                <h1 class="display-6"> @ViewData["Title"] </h1>  
-                <a href="@Url.Action("Create", "Serie")" class="btn btn-success">  
-                    <i class="bg-info bi-plus-circle"></i> Agregar Serie  
-                </a>  
-            </div>  
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1 class="text-white fw-bold">
+            <i class="fas fa-tv text-danger me-2"></i>@ViewData["Title"]
+        </h1>
+        <a asp-action="Create" class="btn btn-danger">
+            <i class="fas fa-plus-circle me-2"></i>Agregar Serie
+        </a>
+    </div>
 
-            <!--Mostrar las alertas-->  
-            @await Html.PartialAsync("_Alerts")  
-        </div>  
-    </div>  
-    <div class="row row-cols-1 row-cols-md-3 g-4">  
-        @if(Model.Any())  
-        {
-            foreach (var serie in Model)
+    <!-- Mostrar las alertas -->
+    @await Html.PartialAsync("_Alerts")
+
+    @if (Model.Any())
+    {
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            @foreach (var serie in Model)
             {
                 <div class="col">
-                    <div class="card" style="width: 18rem;">
-                        <img src="@serie.PosterUrl" class="card-img-top" alt="@serie.Title" style="height: 200px; object-fit: cover;">
+                    <div class="card h-100 bg-dark border-primary series-card">
+                        <!-- Imagen con efecto hover -->
+                        <div class="series-poster-container">
+                            <img src="@(string.IsNullOrEmpty(serie.PosterUrl) ? "https://via.placeholder.com/300x450/1a1a1a/0d6efd?text=No+Poster" : serie.PosterUrl)"
+                                 class="card-img-top series-poster"
+                                 alt="@serie.Title"
+                                 onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/0d6efd?text=No+Poster'">
+                            <div class="series-overlay">
+                                <a asp-action="Details" asp-route-id="@serie.Id" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-info-circle"></i> Detalles
+                                </a>
+                            </div>
+                        </div>
+
                         <div class="card-body">
-                            <h5 class="card-title">@serie.Title</h5>
-                            <p class="card-text">@serie.Description</p>
-                            <p class="card-text">Temporadas: @serie.Seasons</p>
-                            <p class="card-text">Ep: @serie.Episodes</p>
-                            <a href="@Url.Action("Details", "Serie", new { id = serie.Id })" class="btn btn-primary">Detalles</a>
+                            <h5 class="card-title text-white">@serie.Title</h5>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-primary">@serie.Year</span>
+                                @if (!string.IsNullOrEmpty(serie.Genre))
+                                {
+                                    <span class="badge bg-secondary">@serie.Genre</span>
+                                }
+                            </div>
+                            <div class="series-stats d-flex justify-content-between mb-3">
+                                <span class="text-info">
+                                    <i class="fas fa-list-ol me-1"></i> @serie.Seasons Temp.
+                                </span>
+                                <span class="text-info">
+                                    <i class="fas fa-play-circle me-1"></i> @serie.Episodes Eps.
+                                </span>
+                            </div>
+                            <p class="card-text text-muted series-description">@serie.Description</p>
+                        </div>
+
+                        <div class="card-footer bg-transparent border-primary d-flex justify-content-between">
+                            <a asp-action="Edit" asp-route-id="@serie.Id" class="btn btn-outline-warning btn-sm">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a asp-action="ConfirmDelete" asp-route-id="@serie.Id" class="btn btn-outline-danger btn-sm">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
                         </div>
                     </div>
-
                 </div>
             }
-        }
-        else
-        {
-            <h5>Comienza agregando una serie :D</h5>
-        }  
-    </div>  
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <img src="https://via.placeholder.com/300x200/1a1a1a/0d6efd?text=No+Series"
+                 alt="No hay series"
+                 class="img-fluid mb-4 rounded-3"
+                 style="max-height: 200px;">
+            <h3 class="text-white">¡Tu colección de series está vacía!</h3>
+            <p class="text-muted">Comienza agregando tu serie favorita</p>
+            <a asp-action="Create" class="btn btn-primary mt-3">
+                <i class="fas fa-plus-circle me-2"></i>Agregar tu primera serie
+            </a>
+        </div>
+    }
 </div>
+
+<style>
+    .series-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+        overflow: hidden;
+        border-color: #0d6efd !important; /* Azul Bootstrap para diferenciar series */
+    }
+
+        .series-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(13, 110, 253, 0.3);
+        }
+
+    .series-poster-container {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .series-poster {
+        height: 300px;
+        width: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+
+    .series-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .series-card:hover .series-overlay {
+        opacity: 1;
+    }
+
+    .series-card:hover .series-poster {
+        transform: scale(1.05);
+    }
+
+    .series-description {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .series-stats {
+        font-size: 0.9rem;
+    }
+</style>

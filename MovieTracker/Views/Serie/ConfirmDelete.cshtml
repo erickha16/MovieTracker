@@ -1,53 +1,122 @@
 ﻿@model MovieTracker.DTOs.SerieDTO
 @{
-    ViewData["Title"] = "Eliminar Serie";
+    ViewData["Title"] = "Confirmar Eliminación de Serie";
 }
 
-<div class="container mt-5">
-    <div class="card shadow-lg rounded">
-        <div class="card-header bg-secondary text-white text-center py-3">
-            <h3 class="mb-0">@ViewData["Title"]</h3>
+<div class="container py-4">
+    <div class="delete-confirmation-card bg-dark border-danger rounded-4 overflow-hidden shadow-lg">
+        <!-- Cabecera -->
+        <div class="delete-header bg-danger text-white p-4 text-center">
+            <h2 class="mb-0 fw-bold">
+                <i class="fas fa-exclamation-triangle me-2"></i>@ViewData["Title"]
+            </h2>
         </div>
-        <div class="card-body p-4">
-            <h5 class="text-center text-danger fw-bold">
-                <i class="fas fa-exclamation-triangle"></i> ¿Estás seguro de que deseas elimianr la serie?
-            </h5>
 
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <dl class="row">
-                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.Title):</dt>
-                        <dd class="col-7">@Html.DisplayFor(model => model.Title)</dd>
+        <!-- Cuerpo -->
+        <div class="p-4 p-lg-5">
+            <!-- Mensaje de advertencia -->
+            <div class="alert alert-danger border-danger bg-dark text-center">
+                <h4 class="alert-heading fw-bold">
+                    <i class="fas fa-skull-crossbones me-2"></i>¡Advertencia!
+                </h4>
+                <p class="mb-0">¿Estás seguro que deseas eliminar permanentemente esta serie?</p>
+                <p class="mb-0">Esta acción eliminará todos los datos asociados y no se puede deshacer.</p>
+            </div>
 
-                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.Description):</dt>
-                        <dd class="col-7">@Html.DisplayFor(model => model.Description)</dd>
+            <!-- Información de la serie -->
+            <div class="serie-info-container bg-black rounded-3 p-3 mb-4">
+                <div class="row align-items-center">
+                    <!-- Poster -->
+                    <div class="col-md-3 text-center">
+                        <img src="@(string.IsNullOrEmpty(Model.PosterUrl) ? "https://via.placeholder.com/200x300/1a1a1a/dc3545?text=No+Poster" : Model.PosterUrl)"
+                             class="img-fluid rounded-2 border border-danger"
+                             alt="Poster de @Model.Title"
+                             style="max-height: 200px;">
+                    </div>
 
-                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.Director):</dt>
-                        <dd class="col-7">@Html.DisplayFor(model => model.Director)</dd>
-                    </dl>
-                </div>
+                    <!-- Detalles -->
+                    <div class="col-md-9">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <dl class="text-white">
+                                    <dt class="fw-bold text-danger">Título:</dt>
+                                    <dd>@Model.Title</dd>
 
-                <div class="col-md-6">
-                    <dl class="row">
-                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.HighSystem):</dt>
-                        <dd class="col-7">@Html.DisplayFor(model => model.HighSystem)</dd>
+                                    <dt class="fw-bold text-danger mt-3">Director/Creador:</dt>
+                                    <dd>@(string.IsNullOrEmpty(Model.Director) ? "No especificado" : Model.Director)</dd>
 
-                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.Genre):</dt>
-                        <dd class="col-7">@Html.DisplayFor(model => model.Genre)</dd>
-                    </dl>
+                                    <dt class="fw-bold text-danger mt-3">Temporadas:</dt>
+                                    <dd>@Model.Seasons</dd>
+                                </dl>
+                            </div>
+                            <div class="col-md-6">
+                                <dl class="text-white">
+                                    <dt class="fw-bold text-danger">Año:</dt>
+                                    <dd>@Model.Year</dd>
+                                    <dt class="fw-bold text-danger mt-3">Sistema:</dt>
+                                    <dd>@Model.HighSystem</dd>
+                                    <dt class="fw-bold text-danger mt-3">Episodios:</dt>
+                                    <dd>@Model.Episodes</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="text-center mt-4">
-                <a href="@Url.Action("Index", "Movie")" class="btn btn-outline-secondary px-4 py-2">
-                    <i class="fas fa-arrow-left"></i> Cancelar
+            <!-- Descripción -->
+            @if (!string.IsNullOrEmpty(Model.Description))
+            {
+                <div class="mb-4">
+                    <h5 class="text-danger fw-bold"><i class="fas fa-align-left me-2"></i>Sinopsis</h5>
+                    <p class="text-white">@Model.Description</p>
+                </div>
+            }
+
+            <!-- Botones de acción -->
+            <div class="d-flex flex-wrap justify-content-center gap-3 mt-5 pt-4 border-top border-danger">
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-danger px-4">
+                    <i class="fas fa-arrow-left me-2"></i>Volver a detalles
                 </a>
-                <button type="submit" form="delete-form" class="btn btn-danger px-4 py-2 ms-2">
-                    <i class="fas fa-trash-alt"></i> Eliminar
-                </button>
+                <form method="post" asp-action="Delete" asp-route-id="@Model.Id" class="d-inline">
+                    <button type="submit" class="btn btn-danger px-4">
+                        <i class="fas fa-trash-alt me-2"></i>Confirmar Eliminación
+                    </button>
+                </form>
             </div>
         </div>
     </div>
-
-    <form id="delete-form" method="post" action="@Url.Action("Delete", "Serie", new { id = Model.Id })" class="d-none"></form>
 </div>
+
+<style>
+    .delete-confirmation-card {
+        border: 1px solid #dc3545;
+    }
+
+    .delete-header {
+        background-color: #dc3545 !important;
+    }
+
+    .serie-info-container {
+        border: 1px solid #dc3545;
+    }
+
+    .alert-danger {
+        background-color: rgba(220, 53, 69, 0.1) !important;
+        border-color: #dc3545 !important;
+    }
+
+    dl dt {
+        opacity: 0.9;
+    }
+
+    dl dd {
+        margin-bottom: 0.8rem;
+    }
+
+    @@media (max-width: 768px) {
+        .serie-info-container .col-md-3 {
+            margin-bottom: 1.5rem;
+        }
+    }
+</style>

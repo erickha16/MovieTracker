@@ -1,87 +1,193 @@
 ﻿@model MovieTracker.DTOs.SerieDTO
-
 @{
     ViewData["Title"] = "Editar Serie";
 }
 
-<div class="container mt-5">
-    <div class="card shadow-lg rounded">
-        <div class="card-header bg-secondary text-white text-center py-3">
-            <h3 class="mb-0">@ViewData["Title"]</h3>
+<div class="container py-4">
+    <div class="series-form-card bg-dark border-primary rounded-4 overflow-hidden shadow-lg">
+        <!-- Cabecera -->
+        <div class="series-form-header bg-primary text-white p-4 text-center">
+            <h2 class="mb-0 fw-bold">
+                <i class="fas fa-tv me-2"></i>@ViewData["Title"]
+            </h2>
         </div>
-        <div class="card-body p-4">
+
+        <!-- Cuerpo del formulario -->
+        <div class="p-4 p-lg-5">
             @await Html.PartialAsync("_Alerts")
 
-            <!-- enctype="multipart/form-data" Nos sirve para el manejo de imágenes-->
-            <form method="post" class="p-3" asp-action="Edit" asp-controller="Serie" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label asp-for="Title" class="form-label fs-5 fw-semibold"></label>
-                    <input asp-for="Title" class="form-control form-control-lg" placeholder="Título de la serie" />
-                    <span asp-validation-for="Title" class="text-danger small"></span>
+            <form method="post" asp-action="Edit" asp-controller="Serie" enctype="multipart/form-data" class="needs-validation" novalidate>
+                <div class="row g-4">
+                    <!-- Columna izquierda -->
+                    <div class="col-lg-6">
+                        <!-- Título -->
+                        <div class="form-group">
+                            <label asp-for="Title" class="form-label text-white fw-bold">
+                                <i class="fas fa-heading me-2 text-primary"></i>Título
+                            </label>
+                            <input asp-for="Title" class="form-control bg-dark text-white border-secondary"
+                                   placeholder="Ej: Breaking Bad" required />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Año -->
+                        <div class="form-group mt-4">
+                            <label asp-for="Year" class="form-label text-white fw-bold">
+                                <i class="fas fa-calendar-alt me-2 text-primary"></i>Año
+                            </label>
+                            <input asp-for="Year" type="number" class="form-control bg-dark text-white border-secondary"
+                                   min="1900" max="@(DateTime.Now.Year + 5)"
+                                   placeholder="Ej: 2008" required />
+                            <span asp-validation-for="Year" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Temporadas -->
+                        <div class="form-group mt-4">
+                            <label asp-for="Seasons" class="form-label text-white fw-bold">
+                                <i class="fas fa-list-ol me-2 text-primary"></i>Temporadas
+                            </label>
+                            <input asp-for="Seasons" type="number" class="form-control bg-dark text-white border-secondary"
+                                   min="1" max="100" placeholder="Ej: 5" required />
+                            <span asp-validation-for="Seasons" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Episodios -->
+                        <div class="form-group mt-4">
+                            <label asp-for="Episodes" class="form-label text-white fw-bold">
+                                <i class="fas fa-play-circle me-2 text-primary"></i>Episodios
+                            </label>
+                            <input asp-for="Episodes" type="number" class="form-control bg-dark text-white border-secondary"
+                                   min="1" placeholder="Ej: 62" required />
+                            <span asp-validation-for="Episodes" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Columna derecha -->
+                    <div class="col-lg-6">
+                        <!-- Director -->
+                        <div class="form-group">
+                            <label asp-for="Director" class="form-label text-white fw-bold">
+                                <i class="fas fa-user-tie me-2 text-primary"></i>Director/Creador
+                            </label>
+                            <input asp-for="Director" class="form-control bg-dark text-white border-secondary"
+                                   placeholder="Ej: Vince Gilligan" />
+                            <span asp-validation-for="Director" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Género -->
+                        <div class="form-group mt-4">
+                            <label asp-for="GenreId" class="form-label text-white fw-bold">
+                                <i class="fas fa-tags me-2 text-primary"></i>Género
+                            </label>
+                            <select asp-for="GenreId" asp-items="ViewBag.Genres"
+                                    class="form-select bg-dark text-white border-secondary" required>
+                                <option value="">-- Selecciona un género --</option>
+                            </select>
+                            <span asp-validation-for="GenreId" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Plataforma -->
+                        <div class="form-group mt-4">
+                            <label asp-for="PlatformId" class="form-label text-white fw-bold">
+                                <i class="fas fa-tv me-2 text-primary"></i>Plataforma
+                            </label>
+                            <select asp-for="PlatformId" asp-items="ViewBag.Platforms"
+                                    class="form-select bg-dark text-white border-secondary" required>
+                                <option value="">-- Selecciona una plataforma --</option>
+                            </select>
+                            <span asp-validation-for="PlatformId" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="form-group mt-4">
+                            <label asp-for="Description" class="form-label text-white fw-bold">
+                                <i class="fas fa-align-left me-2 text-primary"></i>Sinopsis
+                            </label>
+                            <textarea asp-for="Description" rows="3" class="form-control bg-dark text-white border-secondary"
+                                      placeholder="Breve descripción de la serie..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Imagen -->
+                        <div class="form-group mt-4">
+                            <label asp-for="File" class="form-label text-white fw-bold">
+                                <i class="fas fa-image me-2 text-primary"></i>Poster
+                            </label>
+                            <div class="custom-file">
+                                <input asp-for="File" class="form-control bg-dark text-white border-secondary"
+                                       type="file" accept="image/*" />
+                                <span asp-validation-for="File" class="text-danger small"></span>
+                                <div class="form-text text-muted">Formatos soportados: .jpg, .png, .webp</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="Year" class="form-label fs-5 fw-semibold"></label>
-                    <input asp-for="Year" type="number" class="form-control form-control-lg" min="1900" max="2100" placeholder="Año de lanzamiento" />
-                    <span asp-validation-for="Year" class="text-danger small"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Seasons" class="form-label fs-5 fw-semibold"></label>
-                    <input asp-for="Seasons" type="number" class="form-control form-control-lg" min="1" max="100" placeholder="Temporadas" />
-                    <span asp-validation-for="Seasons" class="text-danger small"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Episodes" class="form-label fs-5 fw-semibold"></label>
-                    <input asp-for="Episodes" type="number" class="form-control form-control-lg" min="1" placeholder="Episodios totales" />
-                    <span asp-validation-for="Episodes" class="text-danger small"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Director" class="form-label fs-5 fw-semibold"></label>
-                    <input asp-for="Director" class="form-control form-control-lg" placeholder="Director de la serie" />
-                    <span asp-validation-for="Director" class="text-danger small"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Description" class="form-label fs-5 fw-semibold"></label>
-                    <textarea asp-for="Description" class="form-control form-control-lg" placeholder="Ingrese la descripción o una pequeña sinopsis"></textarea>
-                    <span asp-validation-for="Description" class="text-danger small"></span>
-                </div>
-
-
-                <div class="mb-3">
-                    <label asp-for="GenreId" class="form-label fs-5 fw-semibold"></label>
-                    <select asp-for="GenreId" asp-items="ViewBag.Genres" class="form-select form-select-lg">
-                        <option value="">Selecciona el Género de la serie</option>
-                    </select>
-                    <span asp-validation-for="GenreId" class="text-danger small"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="PlatformId" class="form-label fs-5 fw-semibold"></label>
-                    <select asp-for="PlatformId" asp-items="ViewBag.Platforms" class="form-select form-select-lg">
-                        <option value="">Plataforma disponible</option>
-                    </select>
-                    <span asp-validation-for="PlatformId" class="text-danger small"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="File" class="form-label fs-5 fw-bold">Cargar Imagen</label>
-                    <input asp-for="File" />
-                    <span asp-validation-for="File" class="text-danger small"></span>
-                </div>
-
-                <div class="text-center mt-4">
-                    <a href="@Url.Action("Index", "Serie")" class="btn btn-outline-secondary px-4 py-2">
-                        <i class="fas fa-arrow-left"></i> Cancelar
+                <!-- Botones de acción -->
+                <div class="d-flex flex-wrap justify-content-center gap-3 mt-5 pt-4 border-top border-primary">
+                    <a asp-action="Index" class="btn btn-outline-primary px-4">
+                        <i class="fas fa-arrow-left me-2"></i>Cancelar
                     </a>
-                    <button type="submit" class="btn btn-success px-4 py-2 ms-2">
-                        <i class="fas fa-save"></i> Aceptar Cambios
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="fas fa-save me-2"></i>Guardar Serie
                     </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<style>
+    .series-form-card {
+        border: 1px solid #dc3545 !important; /* Azul Bootstrap para series */
+    }
+
+    .series-form-header {
+        background-color: #dc3545 !important;
+    }
+
+    .form-control, .form-select {
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            background-color: #1a1a1a;
+            color: white;
+        }
+
+    .border-primary {
+        border-color: #dc3545 !important;
+    }
+
+    .form-text {
+        font-size: 0.85rem;
+    }
+
+    .custom-file-input {
+        color: transparent;
+    }
+
+        .custom-file-input::-webkit-file-upload-button {
+            visibility: hidden;
+        }
+
+        .custom-file-input::before {
+            content: 'Seleccionar imagen';
+            color: white;
+            display: inline-block;
+            background: #dc3545;
+            border-radius: 3px;
+            padding: 5px 8px;
+            outline: none;
+            white-space: nowrap;
+            cursor: pointer;
+            font-weight: 400;
+            font-size: 0.875rem;
+        }
+
+        .custom-file-input:hover::before {
+            background: #dc3545;
+        }
+</style>

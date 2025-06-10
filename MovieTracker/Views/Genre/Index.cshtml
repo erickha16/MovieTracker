@@ -1,56 +1,101 @@
 ﻿@model IEnumerable<MovieTracker.DTOs.GenreDTO>
 @{
-    ViewData["Title"] = "Listado de Género";
+    ViewData["Title"] = "Géneros";
     int num = 1;
 }
 
-<div class="container mt-4">
-    <div class="row">
-        <div class="align-content-lg-stretch col-lg-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="display-6"> @ViewData["Title"] </h1>
-                <a href="@Url.Action("Create", "Genre")" class="btn btn-success">
-                    <i class="bg-info bi-plus-circle"></i> Agregar género
-                </a>
-            </div>
-
-            <!--Mostrar las alertas-->
-            @await Html.PartialAsync("_Alerts")
-
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">@Html.DisplayNameFor(m => m.Name)</th>
-                            <th scope="col">@Html.DisplayNameFor(m => m.HighSystem)</th>
-                            <th scope="col">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                        @if (Model.Any())
-                        {
-                            foreach (var item in Model)
-                            {
-                                <tr>
-                                    <th scope="row">@(num++)</th>
-                                    <td>@item.Name</td>
-                                    <td>@item.HighSystem</td>
-                                    <td>
-                                        <a href="@Url.Action("Edit", "Genre", new { id = item.Id })" class="btn btn-sm btn-warning">Editar</a>
-                                        <a href="@Url.Action("ConfirmDelete", "Genre", new { id = item.Id })" class="btn btn-sm btn-danger">Eliminar</a>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr><td colspan="5">No hay categorías disponibles.</td></tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1 class="text-white fw-bold">
+            <i class="fas fa-tags text-danger me-2"></i>@ViewData["Title"]
+        </h1>
+        <a asp-action="Create" class="btn btn-danger">
+            <i class="fas fa-plus-circle me-2"></i>Agregar Género
+        </a>
     </div>
+
+    <!-- Mostrar las alertas -->
+    @await Html.PartialAsync("_Alerts")
+
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-dark table-hover border-danger">
+                <thead class="bg-danger text-white">
+                    <tr>
+                        <th scope="col" style="width: 50px;">#</th>
+                        <th scope="col">@Html.DisplayNameFor(m => m.Name)</th>
+                        <th scope="col">@Html.DisplayNameFor(m => m.HighSystem)</th>
+                        <th scope="col" style="width: 180px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr class="align-middle">
+                            <th scope="row">@(num++)</th>
+                            <td>
+                                <span class="badge bg-dark border border-danger text-white p-2">
+                                    @item.Name
+                                </span>
+                            </td>
+                            <td>@item.HighSystem</td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning flex-grow-1">
+                                        <i class="fas fa-edit me-1"></i>Editar
+                                    </a>
+                                    <a asp-action="ConfirmDelete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger flex-grow-1">
+                                        <i class="fas fa-trash-alt me-1"></i>Eliminar
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <img src="https://via.placeholder.com/300x200/1a1a1a/dc3545?text=No+G%C3%A9neros"
+                 alt="No hay géneros"
+                 class="img-fluid mb-4 rounded-3"
+                 style="max-height: 200px;">
+            <h3 class="text-white">¡No hay géneros registrados!</h3>
+            <p class="text-muted">Comienza agregando tu primer género</p>
+            <a asp-action="Create" class="btn btn-danger mt-3">
+                <i class="fas fa-plus-circle me-2"></i>Agregar Género
+            </a>
+        </div>
+    }
 </div>
+
+<style>
+    .table {
+        --bs-table-bg: #1a1a1a;
+        --bs-table-striped-bg: #1f1f1f;
+        --bs-table-hover-bg: #2a2a2a;
+        border-color: #dc3545;
+    }
+
+        .table th {
+            border-bottom: 2px solid #dc3545;
+        }
+
+        .table td, .table th {
+            vertical-align: middle;
+            padding: 1rem;
+        }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(220, 53, 69, 0.1) !important;
+    }
+
+    .badge-genre {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        font-weight: 500;
+    }
+</style>

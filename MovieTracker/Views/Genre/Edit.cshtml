@@ -1,40 +1,88 @@
 ﻿@model MovieTracker.DTOs.GenreDTO
-
 @{
     ViewData["Title"] = "Editar Género";
 }
 
-<div class="container m-5">
-    <div class="row">
-        <div class="card shadow-lg rounded">
-            <div class="card-header bg-secondary text-white text-center py-3">
-                <h3>@ViewData["Title"]</h3>
-            </div>
-            <div class="card-body">
+<div class="container py-4">
+    <div class="genre-form-card bg-dark border-danger rounded-4 overflow-hidden shadow-lg">
+        <!-- Cabecera -->
+        <div class="genre-form-header bg-danger text-white p-4 text-center">
+            <h2 class="mb-0 fw-bold">
+                <i class="fas fa-tags me-2"></i>@ViewData["Title"]
+            </h2>
+        </div>
 
-                <!--Mostrar las alertas-->
-                @await Html.PartialAsync("_Alerts")
+        <!-- Cuerpo del formulario -->
+        <div class="p-4 p-lg-5">
+            @await Html.PartialAsync("_Alerts")
 
-                <form asp-method="post" class="p-3" asp-action="Edit" asp-asp-controller="Genre">
-                    <div class="mb-3">
-                        <label asp-for="Name" class="form-label fs-5 fw-bold">Nuevo nombre:</label>
-                        <input asp-for="Name" type="text" class="form-control form-control-lg" placeholder="Ingrese el nombre del género" />
-                        <span asp-validation-for="Name" class="text-danger small"></span>
+            <form method="post" asp-action="Edit" asp-controller="Genre" class="needs-validation" novalidate>
+                <!-- Campo Nombre -->
+                <div class="form-group mb-4">
+                    <label asp-for="Name" class="form-label text-white fw-bold">
+                        <i class="fas fa-font me-2 text-danger"></i>Nombre del Género
+                    </label>
+                    <input asp-for="Name" type="text" class="form-control bg-dark text-white border-secondary"
+                           placeholder="Ej: Ciencia Ficción, Drama, Comedia" required />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+
+                <!-- Campo HighSystem (si es necesario) -->
+                @if (ViewBag.HighSystems != null)
+                {
+                    <div class="form-group mb-4">
+                        <label asp-for="HighSystem" class="form-label text-white fw-bold">
+                            <i class="fas fa-star me-2 text-danger"></i>Sistema de Clasificación
+                        </label>
+                        <select asp-for="HighSystem" class="form-select bg-dark text-white border-secondary">
+                            <option value="">Seleccione un sistema (opcional)</option>
+                            @foreach (var system in ViewBag.HighSystems)
+                            {
+                                <option value="@system">@system</option>
+                            }
+                        </select>
+                        <span asp-validation-for="HighSystem" class="text-danger small"></span>
                     </div>
+                }
 
-                    <div class="text-center mt-4">
-                        <a href="@Url.Action("Index", "Genre")" class="btn btn-outline-secondary px-4 py-2">
-                            <i class="fas fa-arrow-left"></i> Cancelar
-                        </a>
-                        <button type="submit" class="btn btn-success px-4 py-2 ms-2">
-                            <i class="fas fa-save"></i>
-                            Guardar
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <!-- Botones de acción -->
+                <div class="d-flex flex-wrap justify-content-center gap-3 mt-5 pt-4 border-top border-danger">
+                    <a asp-action="Index" class="btn btn-outline-danger px-4">
+                        <i class="fas fa-arrow-left me-2"></i>Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-danger px-4">
+                        <i class="fas fa-save me-2"></i>Guardar Género
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
+<style>
+    .genre-form-card {
+        border: 1px solid #dc3545;
+        max-width: 600px;
+        margin: 0 auto;
+    }
 
+    .genre-form-header {
+        background-color: #dc3545 !important;
+    }
+
+    .form-control, .form-select {
+        transition: border-color 0.3s, box-shadow 0.3s;
+        padding: 0.75rem 1rem;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+            background-color: #1a1a1a;
+            color: white;
+        }
+
+    .form-label {
+        margin-bottom: 0.5rem;
+    }
+</style>

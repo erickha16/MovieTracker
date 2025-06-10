@@ -1,52 +1,113 @@
 ﻿@model MovieTracker.DTOs.GenreDTO
 @{
-    ViewData["Title"] = "Género Producto";
+    ViewData["Title"] = "Confirmar Eliminación de Género";
 }
 
-<div class="container mt-5">
-    <div class="card shadow-lg rounded">
-        <div class="card-header bg-secondary text-white text-center py-3">
-            <h3 class="mb-0">@ViewData["Title"]</h3>
+<div class="container py-4">
+    <div class="delete-confirmation-card bg-dark border-danger rounded-4 overflow-hidden shadow-lg">
+        <!-- Cabecera -->
+        <div class="delete-header bg-danger text-white p-4 text-center">
+            <h2 class="mb-0 fw-bold">
+                <i class="fas fa-exclamation-triangle me-2"></i>@ViewData["Title"]
+            </h2>
         </div>
-        <div class="card-body p-4">
-            <h5 class="text-center text-danger fw-bold">
-                <i class="fas fa-exclamation-triangle"></i> ¿Estás seguro de que deseas eliminar este producto?
-            </h5>
 
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <dl class="row">
-                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.Name):</dt>
-                        <dd class="col-7">@Html.DisplayFor(model => model.Name)</dd>
-                    </dl>
-                </div>
+        <!-- Cuerpo -->
+        <div class="p-4 p-lg-5">
+            <!-- Mensaje de advertencia -->
+            <div class="alert alert-danger border-danger bg-dark text-center">
+                <h4 class="alert-heading fw-bold">
+                    <i class="fas fa-skull-crossbones me-2"></i>¡Advertencia!
+                </h4>
+                <p class="mb-0">¿Estás seguro que deseas eliminar permanentemente este género?</p>
+                <p class="mb-0">Esta acción afectará todas las películas y series asociadas y no se puede deshacer.</p>
+            </div>
 
-                <div class="col-md-6">
-                    <dl class="row">
-                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.HighSystem):</dt>
-                        <dd class="col-7">@Html.DisplayFor(model => model.HighSystem)</dd>
+            <!-- Información del género -->
+            <div class="genre-info-container bg-black rounded-3 p-4 mb-4 border border-danger">
+                <div class="row">
+                    <!-- Nombre del género -->
+                    <div class="col-md-6">
+                        <div class="genre-badge mb-4">
+                            <h3 class="text-center">
+                                <span class="badge bg-dark border border-danger text-white p-3">
+                                    <i class="fas fa-tag me-2 text-danger"></i>@Model.Name
+                                </span>
+                            </h3>
+                        </div>
 
-                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.Name):</dt>
-                        <dd class="col-7">@Html.DisplayFor(model => model.Name)</dd>
-
-                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.Active):</dt>
-                        <dd class="col-7">
-                            <i class="@(Model.Active ? "fas fa-check text-success" : "fas fa-times text-danger")"></i>
-                        </dd>
-                    </dl>
+                        <dl class="text-white">
+                            <dt class="fw-bold text-danger">Estado:</dt>
+                            <dd>
+                                @if (Model.Active)
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check me-1"></i> Activo
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">
+                                        <i class="fas fa-times me-1"></i> Inactivo
+                                    </span>
+                                }
+                            </dd>
+                        </dl>
+                    </div>
                 </div>
             </div>
 
-            <div class="text-center mt-4">
-                <a href="@Url.Action("Index", "Genre")" class="btn btn-outline-secondary px-4 py-2">
-                    <i class="fas fa-arrow-left"></i> Cancelar
+            <!-- Botones de acción -->
+            <div class="d-flex flex-wrap justify-content-center gap-3 mt-5 pt-4 border-top border-danger">
+                <a asp-action="Index" class="btn btn-outline-danger px-4">
+                    <i class="fas fa-arrow-left me-2"></i>Cancelar
                 </a>
-                <button type="submit" form="delete-form" class="btn btn-danger px-4 py-2 ms-2">
-                    <i class="fas fa-trash-alt"></i> Eliminar
-                </button>
+                <form method="post" asp-action="Delete" asp-route-id="@Model.Id" class="d-inline">
+                    <button type="submit" class="btn btn-danger px-4">
+                        <i class="fas fa-trash-alt me-2"></i>Confirmar Eliminación
+                    </button>
+                </form>
             </div>
         </div>
     </div>
-
-    <form id="delete-form" method="post" action="@Url.Action("Delete", "Genre", new { id = Model.Id })" class="d-none"></form>
 </div>
+
+<style>
+    .delete-confirmation-card {
+        border: 1px solid #dc3545;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .delete-header {
+        background-color: #dc3545 !important;
+    }
+
+    .genre-info-container {
+        border: 1px solid #dc3545;
+    }
+
+    .genre-badge .badge {
+        font-size: 1.5rem;
+        white-space: normal;
+    }
+
+    .alert-danger {
+        background-color: rgba(220, 53, 69, 0.1) !important;
+        border-color: #dc3545 !important;
+    }
+
+    dl dt {
+        opacity: 0.9;
+    }
+
+    dl dd {
+        margin-bottom: 1rem;
+    }
+
+    @@media (max-width: 768px) {
+        .genre-badge .badge {
+            font-size: 1.2rem;
+        }
+    }
+</style>
