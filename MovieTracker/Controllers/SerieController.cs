@@ -90,5 +90,59 @@ namespace MovieTracker.Controllers
 
             return View(serieDTO);
         }
+
+
+
+        // ---------------------------------------- Editar una serie ---------------------------------------- \\
+        //GET
+        public async Task<IActionResult> Edit(int id)
+        {
+            try
+            {
+                var serie = await _serieService.GetByIdAsync(id); //Obtiene la serie por ID de forma asíncrona
+
+                //Mandar la lista de géneros y plataformas al formulario de edición
+                var genres = await _genreService.GetAllAsync(); //Obtiene la lista de géneros
+                var platforms = await _platformService.GetAllAsync(); //Obtiene la lista de plataformas
+
+                //Y las mandamos por ViewBag  en forma de selectList para que estén disponibles en la vista
+                ViewBag.Genres = new SelectList(genres, "Id", "Name", serie.GenreId); //Lista de géneros con el género seleccionado
+                ViewBag.Platforms = new SelectList(platforms, "Id", "Name", serie.PlatformId); //Lista de plataformas con la plataforma seleccionada
+
+                return View(serie); //Devuelve la vista para editar una serie
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = "Error al cargar los datos de la serie."; // Mensaje de error si ocurre un problema al cargar los datos
+                return RedirectToAction("Index"); //Redirige a la lista de series si ocurre un error
+            }
+        }
+
+        //POST
+        [HttpPost]
+        public async Task<IActionResult> Edit(SerieDTO serieDTO)
+        {
+            try
+            {
+                if (ModelState.IsValid) //Verifica si el modelo es válido
+                {
+                    await _serieService.UpdateAsync(serieDTO); //Actualiza la serie de forma asíncrona
+                    TempData["SuccessMessage"] = Messages.Success.SerieUpdated; //Mensaje de éxito
+                    return RedirectToAction("Index"); //Redirige a la lista de series
+                }
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = Messages.Error.SerieUpdateError; // Mensaje de error si ocurre un problema al actualizar la serie
+            }
+            //Si el modelo no es válido, vuelve a mostrar el formulario con los datos ingresados
+            var genres = await _genreService.GetAllAsync();
+            var platforms = await _platformService.GetAllAsync();
+
+            ViewBag.Genres = new SelectList(genres, "Id", "Name", serieDTO.GenreId);
+            ViewBag.Platforms = new SelectList(platforms, "Id", "Name", serieDTO.PlatformId);
+
+            return View(serieDTO);
+        }
     }
 }

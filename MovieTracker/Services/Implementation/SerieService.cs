@@ -104,19 +104,53 @@ namespace MovieTracker.Services.Implementation
             await _context.Series.AddAsync(serie); // Agrega la serie al contexto
             await _context.SaveChangesAsync(); // Guarda los cambios en la base de datos
 
+       
         }
 
         //Actualizar una serie existente--------------------------------------------------------------------------------------------------------------
         public async Task UpdateAsync(SerieDTO serieDTO)
         {
-            throw new NotImplementedException();
+            var serie = await _context.Series.FindAsync(serieDTO.Id);
+            if (serie == null)
+            {
+                throw new ApplicationException(Messages.Error.SerieNotFound);
+            }
+
+            //Cargar la imagen en el servidor y obtener la URL
+            var urlImagen = await _imageService.UploadImage(serieDTO.File); // Llama al servicio de imágenes para cargar la imagen y obtener la URL
+
+            //Actualiza las propiedades del producto con los valores del DTO (Los campos que reremos reemplazar)
+            serie.Title = serieDTO.Title;
+            serie.Year = serieDTO.Year;
+            serie.Director = serieDTO.Director;
+            serie.Description = serieDTO.Description;
+            serie.Seasons = serieDTO.Seasons;
+            serie.Episodes = serieDTO.Episodes;
+            //Si no hay una imagen cargada, se mantiene la URL existente
+            serie.PosterUrl = string.IsNullOrEmpty(serieDTO.File?.FileName) ? serie.PosterUrl : urlImagen; // Asignar la URL de la imagen cargada o mantener la existente
+            serie.GenreId = serieDTO.GenreId;
+            serie.PlatformId = serieDTO.PlatformId;
+
+            //Guardar los cambios en la base de datos
+            _context.Series.Update(serie); // Actualiza la serie en el contexto
+            await _context.SaveChangesAsync();
+
         }
 
         //Eliminar una serie por ID--------------------------------------------------------------------------------------------------------------
         public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var serie = await _context.Series.FindAsync(id);
+            if (serie == null)
+            {
+                throw new ApplicationException(Messages.Error.SerieNotFound);
+            }
+
+            // Marcar la serie como eliminada en lugar de eliminarla físicamente
+            serie.IsDeleted = true; // Cambia el estado de IsDeleted a true
+            _context.Series.Update(serie); // Actualiza la serie en el contexto
+            await _context.SaveChangesAsync();
         }
-       
+
     }
 }
