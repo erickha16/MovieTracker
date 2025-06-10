@@ -2,6 +2,7 @@
 using MovieTracker.Constants;
 using MovieTracker.Data;
 using MovieTracker.DTOs;
+using MovieTracker.Models;
 using MovieTracker.Services.Interface;
 
 namespace MovieTracker.Services.Implementation
@@ -64,28 +65,6 @@ namespace MovieTracker.Services.Implementation
                 })
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            /*
-              var product = await _context.Products //Obtiene el producto por Id de la base de datos (Se requeire el contesxto)                
-                .Select(p => new ProductDTO //Proyección a ProductDTO (es lo que pide la función) para devolver solo los datos necesarios
-                {
-                    Id = p.Id, //Id del producto
-                    Name = p.Name, //Nombre del producto
-                    Price = p.Price, //Precio del producto
-                    Description = p.Description, //Descripción del producto
-                    CategoryId = p.CategoryId, //Id de la categoría del producto
-                    BrandId = p.BrandId, //Id de la marca del producto
-                    HighSystem = p.HighSystem, //Indica si el producto es de alto sistema
-                    Active = p.Active, //Estado activo del producto
-                    IsDeleted = p.IsDeleted, //Indica si el producto está eliminado
-                    // Aquí se pueden agregar más propiedades del DTO según sea necesario
-                    Category = p.Category.Name, //Nombre de la categoría del producto (asumiendo que Category es una propiedad de navegación)
-                    Brand = p.Brand.Name //Nombre de la marca del producto (asumiendo que Brand es una propiedad de navegación)
-
-                })
-                .FirstOrDefaultAsync(p => p.Id == id); //Obtiene el primer resultado que cumple el la condición o null si no existe
-
-             */
-
             if (movie == null)
             {
                 throw new ApplicationException(Messages.Error.MovieNotFound);
@@ -97,17 +76,35 @@ namespace MovieTracker.Services.Implementation
         //Agregar una nueva película--------------------------------------------------------------------------------------------------------------
         public async Task AddAsync(MovieDTO movieDTO)
         {
-            throw new NotImplementedException();
+            //Cargar la imagen en el servidor y obtener la URL
+            var urlImagen = await _imageService.UploadImage(movieDTO.File); // Llama al servicio de imágenes para cargar la imagen y obtener la URL
+
+            //Crear una nueva instancia de Movie y mapear los datos desde MovieDTO
+            var movie = new Movie
+            {
+                Title = movieDTO.Title,
+                Year = movieDTO.Year,
+                Director = movieDTO.Director,
+                Description = movieDTO.Description,
+                PosterUrl = urlImagen, // Asignar la URL de la imagen cargada
+                GenderId = movieDTO.GenreId,
+                PlataformId = movieDTO.PlatformId,
+                Active = true, // Por defecto, al agregar una nueva película, se establece como activa
+            };
+
+            //Agregar la nueva película al contexto de la base de datos
+            await _context.Movies.AddAsync(movie); // Agrega la película al contexto
+            await _context.SaveChangesAsync(); // Guarda los cambios en la base de datos
         }
 
         //Actualizar una película existente--------------------------------------------------------------------------------------------------------------
-        public async Task DeleteAsync(int id)
+        public async Task UpdateAsync(MovieDTO movieDTO)
         {
             throw new NotImplementedException();
         }
 
         //Eliminar una película por ID--------------------------------------------------------------------------------------------------------------
-        public async Task UpdateAsync(MovieDTO movieDTO)
+        public async Task DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }

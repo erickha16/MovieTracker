@@ -1,0 +1,81 @@
+﻿@model MovieTracker.DTOs.MovieDTO
+
+@{
+    ViewData["Title"] = "Agregar Película";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg rounded">
+        <div class="card-header bg-secondary text-white text-center py-3">
+            <h3 class="mb-0">@ViewData["Title"]</h3>
+        </div>
+        <div class="card-body p-4">
+            @await Html.PartialAsync("_Alerts")
+
+            <!-- enctype="multipart/form-data" Nos sirve para el manejo de imágenes-->
+            <form method="post" class="p-3" asp-action="Create" asp-controller="Movie" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label fs-5 fw-semibold"></label>
+                    <input asp-for="Title" class="form-control form-control-lg" placeholder="Título de la película" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Year" class="form-label fs-5 fw-semibold"></label>
+                    <input asp-for="Year" type="number" class="form-control form-control-lg" min="1900" max="2100" placeholder="Año de lanzamiento" />
+                    <span asp-validation-for="Year" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Director" class="form-label fs-5 fw-semibold"></label>
+                    <input asp-for="Director" class="form-control form-control-lg" placeholder="Director de la película" />
+                    <span asp-validation-for="Director" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label fs-5 fw-semibold"></label>
+                    <textarea asp-for="Description" class="form-control form-control-lg" placeholder="Ingrese la descripción o una pequeña sinopsis"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+
+
+                <div class="mb-3">
+                    <label asp-for="GenreId" class="form-label fs-5 fw-semibold"></label>
+                    <select asp-for="GenreId" asp-items="ViewBag.Genres" class="form-select form-select-lg">
+                        <option value="">Selecciona el Género de la película</option>
+                    </select>
+                    <span asp-validation-for="GenreId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="PlatformId" class="form-label fs-5 fw-semibold"></label>
+                    <select asp-for="PlatformId" asp-items="ViewBag.Platforms" class="form-select form-select-lg">
+                        <option value="">Plataforma disponible</option>
+                    </select>
+                    <span asp-validation-for="PlatformId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3 form-check">
+                    <input asp-for="Active" type="checkbox" class="form-check-input" />
+                    <label asp-for="Active" class="form-check-label fs-5 fw-semibold"></label>
+                    <span asp-validation-for="Active" class="text-danger small d-block"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="File" class="form-label fs-5 fw-bold">Cargar Imagen</label>
+                    <input asp-for="File" />
+                    <span asp-validation-for="File" class="text-danger small"></span>
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="@Url.Action("Index", "Movie")" class="btn btn-outline-secondary px-4 py-2">
+                        <i class="fas fa-arrow-left"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-success px-4 py-2 ms-2">
+                        <i class="fas fa-save"></i> Guardar cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

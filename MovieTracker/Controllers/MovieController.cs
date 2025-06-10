@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MovieTracker.Constants;
+using MovieTracker.DTOs;
 using MovieTracker.Services.Interface;
 
 namespace MovieTracker.Controllers
@@ -9,10 +11,15 @@ namespace MovieTracker.Controllers
 
         //---------------  Inyección de dependencias del servicio de películas ---------------\\
         private readonly IMovieService _movieService;
+        //Añadimos el servicio de Géneros y Plataformas para poder usarlos en el controlador
+        private readonly IGenreService _genreService;
+        private readonly IPlatformService _platformService;
 
-        public MovieController(IMovieService movieService)
+        public MovieController(IMovieService movieService, IGenreService genreService, IPlatformService platformService)
         {
             _movieService = movieService;
+            _genreService = genreService;
+            _platformService = platformService;
         }
 
         //-------------------------------------------------------------------------------------\\
@@ -39,5 +46,46 @@ namespace MovieTracker.Controllers
         }
 
         //Crear una nueva película
+        //GET
+        public async Task<IActionResult> Create()
+        {
+            //Mandar la lista de géneros y plataformas al formulario de creación
+            var genres = await _genreService.GetAllAsync(); //Obtiene la lista de géneros
+            var platforms = await _platformService.GetAllAsync(); //Obtiene la lista de plataformas
+
+            //Y las mandamos por ViewBag  en forma de selectList para que estén disponibles en la vista
+            ViewBag.Genres = new SelectList(genres, "Id", "Name"); //Lista de géneros
+            ViewBag.Platforms = new SelectList(platforms, "Id", "Name"); //Lista de plataformas
+
+            return View(); //Devuelve la vista para crear una nueva película
+        }
+
+        //POST
+        [HttpPost]
+        public async Task<IActionResult> Create(MovieDTO movieDTO)
+        {
+            try
+            {
+                if (ModelState.IsValid) //Verifica si el modelo es válido
+                {
+                    await _movieService.AddAsync(movieDTO); //Agrega la nueva película de forma asíncrona
+                    TempData["SuccessMessage"] = Messages.Success.MovieCreated; //Mensaje de éxito
+                    return RedirectToAction("Index"); //Redirige a la lista de películas
+                }
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = Messages.Error.MovieCreateError;
+            }
+
+            //Si hay un error, vuelve a cargar las listas de géneros y plataformas
+            var genres = await _genreService.GetAllAsync(); //Obtiene la lista de géneros
+            var platforms = await _platformService.GetAllAsync(); //Obtiene la lista de plataformas
+
+            ViewBag.Genres = new SelectList(genres, "Id", "Name"); //Lista de géneros
+            ViewBag.Platforms = new SelectList(platforms, "Id", "Name"); //Lista de plataformas
+
+            return View(movieDTO); //Devuelve la vista con el modelo de película para corregir errores
+        }
     }
 }
