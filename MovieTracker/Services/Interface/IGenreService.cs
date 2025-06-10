@@ -9,6 +9,9 @@ namespace MovieTracker.Services.Interface
         //Obtener todos los géneros
         Task<List<GenreDTO>> GetAllAsync();
 
+        //Obtener un género por ID
+        Task<GenreDTO> GetByIdAsync(int id);
+
         //Agregar un nuevo género
         Task AddAsync(GenreDTO genreDTO);
 

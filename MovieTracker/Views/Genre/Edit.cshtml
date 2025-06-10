@@ -1,0 +1,40 @@
+﻿@model MovieTracker.DTOs.GenreDTO
+
+@{
+    ViewData["Title"] = "Editar Género";
+}
+
+<div class="container m-5">
+    <div class="row">
+        <div class="card shadow-lg rounded">
+            <div class="card-header bg-secondary text-white text-center py-3">
+                <h3>@ViewData["Title"]</h3>
+            </div>
+            <div class="card-body">
+
+                <!--Mostrar las alertas-->
+                @await Html.PartialAsync("_Alerts")
+
+                <form asp-method="post" class="p-3" asp-action="Edit" asp-asp-controller="Genre">
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label fs-5 fw-bold">Nuevo nombre:</label>
+                        <input asp-for="Name" type="text" class="form-control form-control-lg" placeholder="Ingrese el nombre del género" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <a href="@Url.Action("Index", "Genre")" class="btn btn-outline-secondary px-4 py-2">
+                            <i class="fas fa-arrow-left"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-success px-4 py-2 ms-2">
+                            <i class="fas fa-save"></i>
+                            Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

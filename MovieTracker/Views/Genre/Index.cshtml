@@ -23,7 +23,6 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">@Html.DisplayNameFor(m => m.Name)</th>
-                            <th scope="col">@Html.DisplayNameFor(m => m.Active)</th>
                             <th scope="col">@Html.DisplayNameFor(m => m.HighSystem)</th>
                             <th scope="col">Acciones</th>
                         </tr>
@@ -37,13 +36,9 @@
                                 <tr>
                                     <th scope="row">@(num++)</th>
                                     <td>@item.Name</td>
-                                    <td>
-                                        <i class="@(item.Active ? "fas fa-check text-success" : "fas fa-times text-danger")"></i>
-                                    </td>
                                     <td>@item.HighSystem</td>
                                     <td>
-                                        <a href="@Url.Action("Edit", "Genre")" class="btn btn-sm btn-warning">Editar</a>
-                                        <a href="@Url.Action("Details", "Genre")" class="btn btn-sm btn-info">Detalles</a>
+                                        <a href="@Url.Action("Edit", "Genre", new { id = item.Id })" class="btn btn-sm btn-warning">Editar</a>
                                         <a href="@Url.Action("ConfirmDelete", "Genre", new { id = item.Id })" class="btn btn-sm btn-danger">Eliminar</a>
                                     </td>
                                 </tr>
