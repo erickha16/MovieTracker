@@ -1,6 +1,6 @@
 ﻿namespace MovieTracker.DTOs
 {
-    public class RaitingDTO
+    public class RaitingDTO: RegistryDTO
     {
     }
 }

@@ -1,0 +1,57 @@
+﻿@model MovieTracker.DTOs.MovieDTO
+
+
+<div class="container mt-5">
+    <div class="card shadow-lg rounded">
+        <div class="card-header bg-secondary text-white text-center py-3">
+            <h3 class="mb-0">@Model.Title</h3>
+        </div>
+        <div class="card-body p-4">
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.Title):</dt>
+                        <dd class="col-7">@Html.DisplayFor(model => model.Title)</dd>
+
+                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.Year):</dt>
+                        <dd class="col-7">@Html.DisplayFor(model => model.Year)</dd>
+
+                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.Description):</dt>
+                        <dd class="col-7">@Html.DisplayFor(model => model.Description)</dd>
+
+                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.Director):</dt>
+                        <dd class="col-7">$@Html.DisplayFor(model => model.Director)</dd>
+                    </dl>
+                </div>
+
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.HighSystem):</dt>
+                        <dd class="col-7">@Html.DisplayFor(model => model.HighSystem)</dd>
+
+                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.Genre):</dt>
+                        <dd class="col-7">@Html.DisplayFor(model => model.Genre)</dd>
+
+                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.Platform):</dt>
+                        <dd class="col-7">@Html.DisplayFor(model => model.Platform)</dd>
+
+                      
+                    </dl>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="@Url.Action("Index", "Movie")" class="btn btn-outline-secondary px-4 py-2">
+                    <i class="fas fa-arrow-left"></i> Volver a la lista
+                </a>
+                <a href="@Url.Action("Edit", "Movie", new { id = Model.Id })" class="btn btn-secondary text-white px-4 py-2 ms-2">
+                    <i class="fas fa-edit"></i> Editar
+                </a>
+                <a href="@Url.Action("ConfirmDelete", "Movie", new { id = Model.Id })" class="btn btn-danger px-4 py-2 ms-2">
+                    <i class="fas fa-trash-alt"></i> Eliminar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

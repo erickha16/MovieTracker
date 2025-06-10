@@ -2,7 +2,7 @@
 
 namespace MovieTracker.DTOs
 {
-    public class ActorDTO
+    public class ActorDTO : RegistryDTO
     {
         public int Id { get; set; }
 

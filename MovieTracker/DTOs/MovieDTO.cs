@@ -2,17 +2,20 @@
 
 namespace MovieTracker.DTOs
 {
-    public class MovieDTO
+    public class MovieDTO : RegistryDTO
     {
         public int Id { get; set; }
 
-        [Required]
+        [Display(Name = "Título")]
+        [Required(ErrorMessage = "La película debe de tener un título")]
         public string Title { get; set; }
 
+        [Display(Name = "Año de estreno")]
         public int Year { get; set; }
 
         public string? Director { get; set; }
 
+        [Display(Name = "Descripción")]
         public string? Description { get; set; }
 
         public string? PosterUrl { get; set; }
