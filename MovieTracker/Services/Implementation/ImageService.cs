@@ -28,9 +28,13 @@ namespace MovieTracker.Services.Implementation
 
         public async Task<string> UploadImage(IFormFile file)
         {
+            if (file == null || file.Length == 0)
+            {
+                return string.Empty; // Si no hay archivo, retornar cadena vacía
+            }
+
             ValidateFile(file);
 
-            //string _customPath = Path.Combine(Directory.GetCurrentDirectory(), _uploadSettings.UploadDirectory);
             string _customPath = Path.Combine(_env.WebRootPath, _uploadSettings.UploadDirectory);
 
             if (!Directory.Exists(_customPath))   // Crear el directorio si no existe
@@ -58,6 +62,9 @@ namespace MovieTracker.Services.Implementation
 
         private void ValidateFile(IFormFile file)
         {
+            if (file == null) {
+                return; // No file provided, skip validation
+            }
             var permittedExtensions = _uploadSettings.AllowedExtensions.Split(',');
             var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
@@ -66,10 +73,6 @@ namespace MovieTracker.Services.Implementation
                 throw new NotSupportedException(Messages.Validation.UnSupportedFileType);
             }
         }
-
-
-
-
 
     }
 }

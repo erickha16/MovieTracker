@@ -21,7 +21,7 @@ namespace MovieTracker.DTOs
 
         public string? PosterUrl { get; set; }
 
-        public IFormFile File { get; set; } // Para recibir el archivo de imagen
+        public IFormFile? File { get; set; } // Para recibir el archivo de imagen
 
 
 

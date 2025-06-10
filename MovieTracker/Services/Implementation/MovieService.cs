@@ -100,7 +100,28 @@ namespace MovieTracker.Services.Implementation
         //Actualizar una película existente--------------------------------------------------------------------------------------------------------------
         public async Task UpdateAsync(MovieDTO movieDTO)
         {
-            throw new NotImplementedException();
+            var movie = await _context.Movies.FindAsync(movieDTO.Id); // Busca la película por ID
+            if (movie == null )
+            {
+                throw new ApplicationException(Messages.Error.MovieNotFound); // Si no se encuentra, lanza una excepción
+            }
+            //Cargar la imagen en el servidor y obtener la URL
+            var urlImagen = await _imageService.UploadImage(movieDTO.File); // Llama al servicio de imágenes para cargar la imagen y obtener la URL
+
+
+            //Actualiza las propiedades del producto con los valores del DTO (Los campos que reremos reemplazar)
+            movie.Title = movieDTO.Title;
+            movie.Year = movieDTO.Year;
+            movie.Director = movieDTO.Director;
+            movie.Description = movieDTO.Description;
+            //Si no hay una imagen cargada, se mantiene la URL existente
+            movie.PosterUrl = string.IsNullOrEmpty(movieDTO.File?.FileName) ? movie.PosterUrl : urlImagen; // Asigna la URL de la imagen cargada o mantiene la existente si no hay nueva imagen
+            movie.GenderId = movieDTO.GenreId;
+            movie.PlataformId = movieDTO.PlatformId;
+
+            //Guardar los cambios en la base de datos
+            _context.Movies.Update(movie); // Actualiza la película en el contexto
+            _context.SaveChanges(); // Guarda los cambios en la base de datos
         }
 
         //Eliminar una película por ID--------------------------------------------------------------------------------------------------------------

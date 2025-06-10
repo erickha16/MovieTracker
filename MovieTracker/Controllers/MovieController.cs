@@ -87,5 +87,59 @@ namespace MovieTracker.Controllers
 
             return View(movieDTO); //Devuelve la vista con el modelo de película para corregir errores
         }
+
+
+        // --------------------------------------  Acción para editar una película -------------------------------------- \\
+        //Edit (GET)
+        public async Task<IActionResult> Edit(int id)
+        {
+            try
+            {
+                var movie = await _movieService.GetByIdAsync(id); //Obtiene la película por ID de forma asíncrona
+
+                //Mandar la lista de géneros y plataformas al formulario de edición
+                var genres = await _genreService.GetAllAsync(); //Obtiene la lista de géneros
+                var platforms = await _platformService.GetAllAsync(); //Obtiene la lista de plataformas
+
+                //Y las mandamos por ViewBag  en forma de selectList para que estén disponibles en la vista
+                ViewBag.Genres = new SelectList(genres, "Id", "Name", movie.GenreId); //Lista de géneros
+                ViewBag.Platforms = new SelectList(platforms, "Id", "Name", movie.PlatformId); //Lista de plataformas
+
+                return View(movie); //Devuelve la vista para editar una película
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = Messages.Error.MovieNotFound;
+                return RedirectToAction("Index"); //Redirige a la lista de películas si no se encuentra la película
+            }
+        }
+
+        //Edit (POST)
+        [HttpPost]
+        public async Task<IActionResult> Edit(MovieDTO movieDTO)
+        {
+            try
+            {
+                if (ModelState.IsValid) //Verifica si el modelo es válido
+                {
+                    await _movieService.UpdateAsync(movieDTO); //Actualiza la película de forma asíncrona
+                    TempData["SuccessMessage"] = Messages.Success.MovieUpdated; //Mensaje de éxito
+                    return RedirectToAction("Index"); //Redirige a la lista de películas
+                }
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = Messages.Error.MovieUpdateError;
+            }
+
+            //Si hay un error, vuelve a cargar las listas de géneros y plataformas
+            var genres = await _genreService.GetAllAsync(); //Obtiene la lista de géneros
+            var platforms = await _platformService.GetAllAsync(); //Obtiene la lista de plataformas
+
+            ViewBag.Genres = new SelectList(genres, "Id", "Name", movieDTO.GenreId); //Lista de géneros
+            ViewBag.Platforms = new SelectList(platforms, "Id", "Name", movieDTO.PlatformId); //Lista de plataformas
+
+            return View(movieDTO); //Devuelve la vista con el modelo de película para corregir errores
+        }
     }
 }
