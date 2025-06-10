@@ -1,57 +1,137 @@
 ﻿@model MovieTracker.DTOs.MovieDTO
 
+@{
+    ViewData["Title"] = "Detalles de Película";
+}
 
-<div class="container mt-5">
-    <div class="card shadow-lg rounded">
-        <div class="card-header bg-secondary text-white text-center py-3">
-            <h3 class="mb-0">@Model.Title</h3>
+<div class="container py-4">
+    <div class="movie-detail-card bg-dark border-danger rounded-4 overflow-hidden shadow-lg">
+        <!-- Cabecera con imagen de fondo -->
+        <div class="movie-header" style="background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+            url('@(string.IsNullOrEmpty(Model.PosterUrl) ? "https://via.placeholder.com/1920x400/1a1a1a/dc3545?text=No+Poster" : Model.PosterUrl)');
+            background-size: cover; background-position: center; height: 300px;">
+            <div class="container h-100 d-flex flex-column justify-content-end">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h1 class="text-white fw-bold mb-2">@Model.Title</h1>
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="badge bg-danger me-2">@Model.Year</span>
+                            @if (!string.IsNullOrEmpty(Model.Genre))
+                            {
+                                <span class="badge bg-secondary me-2">@Model.Genre</span>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.Platform))
+                            {
+                                <span class="badge bg-dark border border-danger text-danger">@Model.Platform</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <div class="rating-display">
+                            @if (!string.IsNullOrEmpty(Model.Rating))
+                            {
+                                <span class="text-warning fw-bold fs-4">★ @Model.Rating</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="card-body p-4">
 
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <dl class="row">
-                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.Title):</dt>
-                        <dd class="col-7">@Html.DisplayFor(model => model.Title)</dd>
+        <!-- Cuerpo de la tarjeta -->
+        <div class="p-4 p-lg-5">
+            <div class="row">
+                <!-- Columna izquierda -->
+                <div class="col-lg-8">
+                    <h4 class="text-danger mb-3"><i class="fas fa-info-circle me-2"></i>Sinopsis</h4>
+                    <p class="text-white mb-4">@(string.IsNullOrEmpty(Model.Description) ? "No hay descripción disponible." : Model.Description)</p>
 
-                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.Year):</dt>
-                        <dd class="col-7">@Html.DisplayFor(model => model.Year)</dd>
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h4 class="text-danger mb-3"><i class="fas fa-user-tie me-2"></i>Equipo</h4>
+                            <dl class="text-white">
+                                <dt class="fw-bold">Director:</dt>
+                                <dd>@(string.IsNullOrEmpty(Model.Director) ? "No especificado" : Model.Director)</dd>
 
-                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.Description):</dt>
-                        <dd class="col-7">@Html.DisplayFor(model => model.Description)</dd>
+                                 <dt class="fw-bold mt-3">Agregada:</dt>
+                                 <dd>@Model.HighSystem</dd>
+                            </dl>
+                        </div>
 
-                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.Director):</dt>
-                        <dd class="col-7">$@Html.DisplayFor(model => model.Director)</dd>
-                    </dl>
+                        <div class="col-md-6">
+                            <h4 class="text-danger mb-3"><i class="fas fa-tags me-2"></i>Detalles</h4>
+                            <dl class="text-white">
+                                <dt class="fw-bold">Género:</dt>
+                                <dd>@(string.IsNullOrEmpty(Model.Genre) ? "No especificado" : Model.Genre)</dd>
+
+                                <dt class="fw-bold mt-3">Plataforma:</dt>
+                                <dd>@(string.IsNullOrEmpty(Model.Platform) ? "No especificada" : Model.Platform)</dd>
+                            </dl>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="col-md-6">
-                    <dl class="row">
-                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.HighSystem):</dt>
-                        <dd class="col-7">@Html.DisplayFor(model => model.HighSystem)</dd>
-
-                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.Genre):</dt>
-                        <dd class="col-7">@Html.DisplayFor(model => model.Genre)</dd>
-
-                        <dt class="col-5 fw-bold">@Html.DisplayNameFor(model => model.Platform):</dt>
-                        <dd class="col-7">@Html.DisplayFor(model => model.Platform)</dd>
-
-                      
-                    </dl>
+                <!-- Columna derecha (Poster) -->
+                <div class="col-lg-4 mt-4 mt-lg-0">
+                    <div class="movie-poster-container bg-black rounded-3 p-2 border border-danger">
+                        <img src="@(string.IsNullOrEmpty(Model.PosterUrl) ? "https://via.placeholder.com/300x450/1a1a1a/dc3545?text=No+Poster" : Model.PosterUrl)"
+                             class="img-fluid rounded-2"
+                             alt="Poster de @Model.Title"
+                             onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/dc3545?text=No+Poster'">
+                    </div>
                 </div>
             </div>
 
-            <div class="text-center mt-4">
-                <a href="@Url.Action("Index", "Movie")" class="btn btn-outline-secondary px-4 py-2">
-                    <i class="fas fa-arrow-left"></i> Volver a la lista
+            <!-- Botones de acción -->
+            <div class="d-flex flex-wrap justify-content-center gap-3 mt-5 pt-4 border-top border-danger">
+                <a asp-action="Index" class="btn btn-outline-danger px-4">
+                    <i class="fas fa-arrow-left me-2"></i>Volver al listado
                 </a>
-                <a href="@Url.Action("Edit", "Movie", new { id = Model.Id })" class="btn btn-secondary text-white px-4 py-2 ms-2">
-                    <i class="fas fa-edit"></i> Editar
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-danger px-4">
+                    <i class="fas fa-edit me-2"></i>Editar Película
                 </a>
-                <a href="@Url.Action("ConfirmDelete", "Movie", new { id = Model.Id })" class="btn btn-danger px-4 py-2 ms-2">
-                    <i class="fas fa-trash-alt"></i> Eliminar
+                <a asp-action="ConfirmDelete" asp-route-id="@Model.Id" class="btn btn-outline-warning px-4">
+                    <i class="fas fa-trash-alt me-2"></i>Eliminar
                 </a>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .movie-detail-card {
+        border: 1px solid #dc3545;
+    }
+
+    .movie-header {
+        position: relative;
+        color: white;
+    }
+
+    .movie-poster-container {
+        box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+        transition: transform 0.3s;
+    }
+
+        .movie-poster-container:hover {
+            transform: translateY(-5px);
+        }
+
+    dl dt {
+        opacity: 0.8;
+    }
+
+    dl dd {
+        margin-bottom: 0.8rem;
+    }
+
+    @@media (max-width: 768px) {
+        .movie-header {
+            height: 200px !important;
+        }
+
+            .movie-header h1 {
+                font-size: 1.8rem;
+            }
+    }
+</style>

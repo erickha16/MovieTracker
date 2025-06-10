@@ -1,44 +1,132 @@
 ﻿@model List<MovieTracker.DTOs.MovieDTO>
 @{
-    ViewData["Title"] = "Peliculas";
+    ViewData["Title"] = "Películas";
 }
 
-<div class="container mt-4">
-    <div class="row">
-        <div class="align-content-lg-stretch col-lg-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="display-6"> @ViewData["Title"] </h1>
-                <a href="@Url.Action("Create", "Movie")" class="btn btn-success">
-                    <i class="bg-info bi-plus-circle"></i> Agregar Película
-                </a>
-            </div>
-
-            <!--Mostrar las alertas-->
-            @await Html.PartialAsync("_Alerts")  
-        </div>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1 class="text-white fw-bold">
+            <i class="fas fa-film text-danger me-2"></i>@ViewData["Title"]
+        </h1>
+        <a asp-action="Create" class="btn btn-danger">
+            <i class="fas fa-plus-circle me-2"></i>Agregar Película
+        </a>
     </div>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        @if (Model.Any())
-        {
-            foreach (var movie in Model)
+
+    <!-- Mostrar las alertas -->
+    @await Html.PartialAsync("_Alerts")
+
+    @if (Model.Any())
+    {
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            @foreach (var movie in Model)
             {
                 <div class="col">
-                    <div class="card" style="width: 18rem;">
-                        <img src="@movie.PosterUrl" class="card-img-top" alt="@movie.Title" style="height: 200px; object-fit: cover;">
+                    <div class="card h-100 bg-dark border-danger movie-card">
+                        <!-- Imagen con efecto hover -->
+                        <div class="movie-poster-container">
+                            <img src="@(string.IsNullOrEmpty(movie.PosterUrl) ? "https://via.placeholder.com/300x450/1a1a1a/dc3545?text=No+Poster" : movie.PosterUrl)"
+                                 class="card-img-top movie-poster"
+                                 alt="@movie.Title"
+                                 onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/dc3545?text=No+Poster'">
+                            <div class="movie-overlay">
+                                <a asp-action="Details" asp-route-id="@movie.Id" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-info-circle"></i> Detalles
+                                </a>
+                            </div>
+                        </div>
+
                         <div class="card-body">
-                            <h5 class="card-title">@movie.Title</h5>
-                            <p class="card-text">@movie.Description</p>
-                            <a href="@Url.Action("Details", "Movie", new { id = movie.Id })" class="btn btn-primary">Detalles</a>
+                            <h5 class="card-title text-white">@movie.Title</h5>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-danger">@movie.Year</span>
+                                @if (!string.IsNullOrEmpty(movie.Genre))
+                                {
+                                    <span class="badge bg-secondary">@movie.Genre</span>
+                                }
+                            </div>
+                            <p class="card-text text-muted movie-description">@movie.Description</p>
+                        </div>
+
+                        <div class="card-footer bg-transparent border-danger d-flex justify-content-between">
+                            <a asp-action="Edit" asp-route-id="@movie.Id" class="btn btn-outline-warning btn-sm">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a asp-action="ConfirmDelete" asp-route-id="@movie.Id" class="btn btn-outline-danger btn-sm">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
                         </div>
                     </div>
-
                 </div>
             }
-        }
-        else
-        {
-            <h5>Comienza agregando una peli bien chida :D</h5>
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <img src="https://via.placeholder.com/300x200/1a1a1a/dc3545?text=No+Movies"
+                 alt="No hay películas"
+                 class="img-fluid mb-4 rounded-3"
+                 style="max-height: 200px;">
+            <h3 class="text-white">¡Tu colección está vacía!</h3>
+            <p class="text-muted">Comienza agregando una película bien chida :D</p>
+            <a asp-action="Create" class="btn btn-danger mt-3">
+                <i class="fas fa-plus-circle me-2"></i>Agregar tu primera película
+            </a>
+        </div>
+    }
+</div>
+
+<style>
+    .movie-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+        overflow: hidden;
+    }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(220, 53, 69, 0.3);
         }
 
-    </div>
-</div>
+    .movie-poster-container {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .movie-poster {
+        height: 300px;
+        width: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+
+    .movie-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .movie-card:hover .movie-overlay {
+        opacity: 1;
+    }
+
+    .movie-card:hover .movie-poster {
+        transform: scale(1.05);
+    }
+
+    .movie-description {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>

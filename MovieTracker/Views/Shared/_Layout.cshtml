@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,51 +8,125 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MovieTracker.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
+    <style>
+        :root {
+            --dark-bg: #1a1a1a; /* Fondo casi negro */
+            --footer-bg: #2d2d2d; /* Gris oscuro para footer */
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: #f8f9fa; /* Texto claro para contraste */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background-color: #dc3545 !important; /* Rojo Bootstrap */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+
+        .navbar-brand, .nav-link {
+            color: white !important;
+            font-weight: 500;
+        }
+
+            .nav-link:hover {
+                color: rgba(255,255,255,0.8) !important;
+            }
+
+        .container-fluid {
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+
+        main {
+            flex: 1;
+            padding-top: 2rem;
+        }
+
+        .footer {
+            background-color: var(--footer-bg) !important;
+            padding: 1.5rem 0;
+            margin-top: auto;
+        }
+
+            .footer a {
+                text-decoration: none;
+                transition: color 0.2s;
+            }
+
+                .footer a:hover {
+                    color: #dc3545 !important;
+                }
+
+        /* Corrección para el contenedor principal */
+        .container {
+            max-width: 1400px;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MovieTracker</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-film me-2"></i>MovieTracker
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item mx-2">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home me-1"></i> Home
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Genre" asp-action="Index">Géneros</a>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link" asp-area="" asp-controller="Genre" asp-action="Index">
+                                <i class="fas fa-tags me-1"></i> Géneros
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Movie" asp-action="Index">Películas</a>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link" asp-area="" asp-controller="Movie" asp-action="Index">
+                                <i class="fas fa-video me-1"></i> Películas
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Serie" asp-action="Index">Series</a>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link" asp-area="" asp-controller="Serie" asp-action="Index">
+                                <i class="fas fa-tv me-1"></i> Series
+                            </a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main" class="pb-5">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - MovieTracker - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="footer mt-auto py-3">
+        <div class="container text-center">
+            <div class="d-flex justify-content-center align-items-center">
+                <span class="me-2">&copy; 2025 - MovieTracker</span>
+                <span class="mx-2">|</span>
+                <a href="https://github.com/erickha16" class="text-light">
+                    <i class="fab fa-github me-1"></i> Erick Hernández
+                </a>
+            </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-
     @await Html.PartialAsync("_ValidationScriptsPartial")
 </body>
 </html>
