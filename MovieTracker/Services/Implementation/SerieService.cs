@@ -1,4 +1,5 @@
-﻿using MovieTracker.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using MovieTracker.Data;
 using MovieTracker.DTOs;
 using MovieTracker.Services.Interface;
 
@@ -8,11 +9,15 @@ namespace MovieTracker.Services.Implementation
     {
         // ------ Inyección de dependencias del contexto de la base de datos -------
         //La inyección de dependencias permite que el servicio pueda acceder a la base de datos sin necesidad de crear una
-        //instancia del contexto directamente.
+        //instancia del contexto directamente y también la instancia para cargar imágenes.
+
         private readonly ApplicationDbContext _context; //Contexto de la base de datos
-        public SerieService(ApplicationDbContext context)
+        private readonly IImageService _imageService; //Servicio para manejar imágenes
+
+        public SerieService(ApplicationDbContext context, IImageService imageService)
         {
             _context = context;
+            _imageService = imageService;
         }
 
         //------------------------------------------------------------------------
@@ -20,31 +25,49 @@ namespace MovieTracker.Services.Implementation
         //Implementación de los métodos definidos en ISerieService
 
         //Listar todas las series--------------------------------------------------------------------------------------------------------------
-        public Task<List<SerieDTO>> GetAllAsync()
+        public async Task<List<SerieDTO>> GetAllAsync()
         {
-            throw new NotImplementedException();
+           var series = await _context.Series
+                .Where(s => !s.IsDeleted) // Filtrar series activas
+                .Select(s => new SerieDTO
+                {
+                    Id = s.Id,
+                    Title = s.Title,
+                    Year = s.Year,
+                    Director = s.Director,
+                    Description = s.Description,
+                    Seasons = s.Seasons,
+                    Episodes = s.Episodes,
+                    PosterUrl = s.PosterUrl,
+                    GenreId = s.GenreId,
+                    Genre = s.Genre.Name,
+                    PlatformId = s.PlatformId,
+                    Platform = s.Platform.Name
+                })
+                .ToListAsync();
+            return series;
         }
 
         //Obtener una serie por ID--------------------------------------------------------------------------------------------------------------
-        public Task<SerieDTO> GetByIdAsync(int id)
+        public async Task<SerieDTO> GetByIdAsync(int id)
         {
             throw new NotImplementedException();
         }
 
         //Agregar una nueva serie--------------------------------------------------------------------------------------------------------------
-        public Task AddAsync(SerieDTO serieDTO)
+        public async Task AddAsync(SerieDTO serieDTO)
         {
             throw new NotImplementedException();
         }
 
         //Actualizar una serie existente--------------------------------------------------------------------------------------------------------------
-        public Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }
 
         //Eliminar una serie por ID--------------------------------------------------------------------------------------------------------------
-        public Task UpdateAsync(SerieDTO serieDTO)
+        public async Task UpdateAsync(SerieDTO serieDTO)
         {
             throw new NotImplementedException();
         }

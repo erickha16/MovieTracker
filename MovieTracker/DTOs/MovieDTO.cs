@@ -17,11 +17,26 @@ namespace MovieTracker.DTOs
 
         public string? PosterUrl { get; set; }
 
-        [Required]
-        public int GenderId { get; set; }
 
-        public int PlataformId { get; set; }
 
-        public int RatingId { get; set; } //Duda si esto va aquí
+        [Display(Name = "Género")] //Para cuando se selccione en el formulario
+        [Required(ErrorMessage = "Debes seleccionar un Género")]
+        public int GenreId { get; set; }
+
+        [Display(Name = "Género")] //Para mostrar en la vista
+        public string? Genre { get; set; }
+
+
+        [Display(Name = "Plataforma")] //Para cuando se selccione en el formulario
+        public int? PlatformId { get; set; }
+
+        [Display(Name = "Plataforma")] //Para mostrar en la vista
+        public string? Platform { get; set; }
+
+        [Display(Name = "Calificación")] //Para cuando se selccione en el formulario
+        public int? RatingId { get; set; }
+
+        [Display(Name = "Calificación")] //Para mostrar en la vista
+        public string? Rating { get; set; } //Para mostrar en la vista
     }
 }

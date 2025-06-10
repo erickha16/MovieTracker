@@ -17,24 +17,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 
 //------------------------------ Agregar Servicios personalizados ------------------------------\\
-//Servicio de imágenes, en este caso no se implementa, pero se puede agregar más adelante si es necesario.
-// builder.Services.AddScoped<IImageService, ImageService>();
+// Servicio de imágenes
+builder.Services.AddScoped<IImageService, ImageService>();
 
 // Servicio de géneros
 builder.Services.AddScoped<IGenreService, GenreService>();
 
-//
+//Servicio de Películas
+builder.Services.AddScoped<IMovieService, MovieService>();
 
-
-
-
-
-
-
-
-
-
-
+//Servicio de Series
+builder.Services.AddScoped<ISerieService, SerieService>();
 
 
 
